@@ -6,15 +6,19 @@ our $VERSION = '0.03';
 
 =head1 NAME
 
-RT-Extension-ListAllEmailRecipients - List email recipients in the
-body of RT email
+RT-Extension-ListAllEmailRecipients - Determine all recipients for a
+notification and provide emails via template variables
 
 =head1 DESCRIPTION
 
 ListAllEmailRecipients does a dry run of all scrips configured for a
-transaction to determine the full list of email receipients. This
+notification to determine the full list of email receipients. This
 list is then made available to templates when the actual notification
 scrips are subsequently run to send email.
+
+The current version calculates emails for comments and replies on
+existing tickets via the web UI and email. It does not calculate
+recipients on create.
 
 =head1 RT VERSION
 
@@ -52,7 +56,7 @@ Add this line:
 
 ListEmailReceipients adds the following template variables containing
 a list of all recipients for that type for the current transaction
-(comment, correspond, etc.).
+(comment, correspond, etc.) across all enabled notification scrips.
 
     $NotificationRecipientsTo
     $NotificationRecipientsCc
@@ -110,18 +114,30 @@ sub ProcessScripDryRun {
 
     RT::Logger->debug("Starting dry run to gather recipients");
 
-    my @dryrun = $TicketObj->DryRun(
-        sub {
-            local $args{UpdateContent} ||= "Content";
-            HTML::Mason::Commands::ProcessUpdateMessage(ARGSRef  => \%args, TicketObj => $TicketObj, KeepAttachments => 1 );
-            HTML::Mason::Commands::ProcessTicketWatchers(ARGSRef => \%args, TicketObj => $TicketObj );
-            HTML::Mason::Commands::ProcessTicketBasics(  ARGSRef => \%args, TicketObj => $TicketObj );
-            HTML::Mason::Commands::ProcessTicketLinks(   ARGSRef => \%args, TicketObj => $TicketObj );
-            HTML::Mason::Commands::ProcessTicketDates(   ARGSRef => \%args, TicketObj => $TicketObj );
-            HTML::Mason::Commands::ProcessObjectCustomFieldUpdates(ARGSRef => \%args, TicketObj => $TicketObj );
-            HTML::Mason::Commands::ProcessTicketReminders( ARGSRef => \%args, TicketObj => $TicketObj );
-        }
-    );
+    my @dryrun;
+
+    if ( $args{'UpdateInterface'} eq 'Email' ){
+        my $action = ucfirst $args{Action};
+        @dryrun = $args{'Ticket'}->DryRun(
+            sub {
+                my ( $status, $msg ) = $args{Ticket}->$action( MIMEObj => $args{Message} );
+            }
+        );
+    }
+    else{
+        @dryrun = $TicketObj->DryRun(
+            sub {
+                local $args{UpdateContent} ||= "Content";
+                HTML::Mason::Commands::ProcessUpdateMessage(ARGSRef  => \%args, TicketObj => $TicketObj, KeepAttachments => 1 );
+                HTML::Mason::Commands::ProcessTicketWatchers(ARGSRef => \%args, TicketObj => $TicketObj );
+                HTML::Mason::Commands::ProcessTicketBasics(  ARGSRef => \%args, TicketObj => $TicketObj );
+                HTML::Mason::Commands::ProcessTicketLinks(   ARGSRef => \%args, TicketObj => $TicketObj );
+                HTML::Mason::Commands::ProcessTicketDates(   ARGSRef => \%args, TicketObj => $TicketObj );
+                HTML::Mason::Commands::ProcessObjectCustomFieldUpdates(ARGSRef => \%args, TicketObj => $TicketObj );
+                HTML::Mason::Commands::ProcessTicketReminders( ARGSRef => \%args, TicketObj => $TicketObj );
+            }
+        );
+    }
     return unless @dryrun;
 
     my %headers = (To => {}, Cc => {}, Bcc => {});
