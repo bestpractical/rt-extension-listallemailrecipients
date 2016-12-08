@@ -1,0 +1,14 @@
+<%init>
+# Only run on an actual update.
+return unless $ARGSRef->{'UpdateType'};
+RT::Extension::ListAllEmailRecipients::FindNotificationRecipients(
+    %{$ARGSRef},
+    Actions => $Actions,
+    TicketId => $Ticket->Id,
+    CurrentUser => $Ticket->CurrentUser);
+</%init>
+<%args>
+$Ticket
+$ARGSRef
+$Actions
+</%args>
