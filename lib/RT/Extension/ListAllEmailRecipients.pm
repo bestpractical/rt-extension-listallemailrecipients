@@ -102,7 +102,9 @@ sub FindNotificationRecipients {
 # Code copied from ShowSimplifiedRecipients and modified
 
 sub ProcessScripDryRun {
-    my %args = (@_);
+    my %args = (
+        UpdateInterface => 'Web',
+        @_);
 
     my $TicketObj = RT::Ticket->new($args{'CurrentUser'});
     my ($ret, $msg) = $TicketObj->Load($args{'TicketId'});
