@@ -16,13 +16,13 @@ meta-spec:
 name: RT-Extension-ListAllEmailRecipients
 no_index:
   directory:
+    - html
     - inc
     - xt
 requires:
   perl: 5.10.1
 resources:
   license: http://opensource.org/licenses/gpl-license.php
-  repository: https://github.com/bestpractical/rt-extension-listemailrecipients
-version: '0.03'
+version: '0.01'
 x_module_install_rtx_version: '0.38'
 x_requires_rt: 4.2.0

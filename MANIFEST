@@ -1,4 +1,5 @@
 Changes
+html/Callbacks/RT-Extension-ListAllEmailRecipients/Ticket/Display.html/ProcessArguments
 inc/Module/Install.pm
 inc/Module/Install/Base.pm
 inc/Module/Install/Can.pm
@@ -13,10 +14,11 @@ inc/Module/Install/Substitute.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
 inc/YAML/Tiny.pm
-lib/RT/Action/Notify_Vendor.pm
 lib/RT/Extension/ListAllEmailRecipients.pm
 lib/RT/Extension/ListAllEmailRecipients/Test.pm
 lib/RT/Extension/ListAllEmailRecipients/Test.pm.in
+lib/RT/Interface/Email/Action/ListAllEmailRecipients.pm
+lib/RT/Template_Vendor.pm
 Makefile.PL
 MANIFEST			This list of files
 META.yml

@@ -2,7 +2,7 @@ use strict;
 use warnings;
 package RT::Extension::ListAllEmailRecipients;
 
-our $VERSION = '0.03';
+our $VERSION = '0.01';
 
 =head1 NAME
 
@@ -62,6 +62,15 @@ a list of all recipients for that type for the current transaction
     $NotificationRecipientsTo
     $NotificationRecipientsCc
     $NotificationRecipientsBcc
+
+To include these in an outgoing email, like the Admin email to AdminCcs
+on a ticket, add something like the following to the appropriate template:
+
+    <p>Email was sent to the following addresses:</p>
+
+    <p>To: {$NotificationRecipientsTo} </p>
+    <p>Cc: {$NotificationRecipientsCc} </p>
+    <p>Bcc: {$NotificationRecipientsBcc} </p>
 
 =head1 AUTHOR
 
@@ -149,7 +158,6 @@ sub ProcessScripDryRun {
     if (@scrips) {
         for my $scrip (grep $_->ActionObj->Action->isa('RT::Action::SendEmail'), @scrips) {
             my $action = $scrip->ActionObj->Action;
-            warn "Argument is: " . $action->Argument;
             for my $type (qw(To Cc Bcc)) {
                 for my $addr ($action->$type()) {
                     if (grep {$addr->address eq $_} @{$action->{NoSquelch}{$type} || []}) {
