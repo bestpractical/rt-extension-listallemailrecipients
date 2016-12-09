@@ -36,5 +36,14 @@ sub import {
     require RT::Extension::ListAllEmailRecipients;
 }
 
+sub bootstrap_more_config{
+    my $self = shift;
+    my $config = shift;
+    my $args_ref = shift;
+
+    print $config "Set( \@MailPlugins, qw(Auth::MailFrom Action::ListAllEmailRecipients));\n";
+
+    return;
+}
 
 1;
