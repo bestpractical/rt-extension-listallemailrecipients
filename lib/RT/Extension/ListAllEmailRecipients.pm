@@ -38,9 +38,10 @@ May need root permissions
 
 =item Edit your F</opt/rt4/etc/RT_SiteConfig.pm>
 
-Add this line:
+Add these lines, both are required:
 
     Plugin('RT::Extension::ListAllEmailRecipients');
+    Set(@MailPlugins, qw(Auth::MailFrom Action::ListAllEmailRecipients));
 
 =item Clear your mason cache
 
