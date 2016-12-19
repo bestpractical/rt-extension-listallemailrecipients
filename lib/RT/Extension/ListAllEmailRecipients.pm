@@ -185,7 +185,7 @@ sub ProcessScripDryRun {
 
     # One-time Ccs and Bccs are processed through email headers, so they won't be picked up
     # by running the action To, Cc, Bcc methods above. If passed, add them here.
-    foreach my $one_time ( qw(Cc Bcc) ){
+    foreach my $one_time ( qw(To Cc Bcc) ){
         my @addresses = Email::Address->parse($args{"Update" . $one_time}) if $args{"Update" . $one_time};
         push @{$recipients{$one_time}}, @addresses;
     }
