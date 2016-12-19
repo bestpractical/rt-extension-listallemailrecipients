@@ -120,7 +120,20 @@ sub ProcessScripDryRun {
 
     my @dryrun;
 
-    if ( $args{'UpdateInterface'} eq 'Email' ){
+    if ( $args{'UpdateInterface'} eq 'EmailCreate' ) {
+        @dryrun = $args{'Ticket'}->DryRun(
+            sub {
+                $args{Ticket}->Create(
+                    Queue     => $args{'Queue'},
+                    Subject   => $args{'Subject'},
+                    Requestor => $args{'Requestor'},
+                    Cc        => $args{'Cc'},
+                    MIMEObj   => $args{'MIMEObj'},
+                );
+            }
+        );
+    }
+    elsif ( $args{'UpdateInterface'} eq 'Email' ){
         my $action = ucfirst $args{Action};
         @dryrun = $args{'Ticket'}->DryRun(
             sub {

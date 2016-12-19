@@ -50,6 +50,15 @@ sub _HandleCreate {
     my $subject = Encode::decode( "UTF-8", $head->get('Subject') );
     chomp $subject;
 
+    RT::Extension::ListAllEmailRecipients::FindNotificationRecipients(
+        Ticket => $args{'Ticket'},
+        Queue     => $args{Queue}->Id,
+        Subject   => $subject,
+        Requestor => \@Requestors,
+        Cc        => \@Cc,
+        MIMEObj   => $args{Message},
+        UpdateInterface => 'EmailCreate');
+
     my ( $id, $Transaction, $ErrStr ) = $args{Ticket}->Create(
         Queue     => $args{Queue}->Id,
         Subject   => $subject,
