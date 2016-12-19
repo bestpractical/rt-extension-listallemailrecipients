@@ -116,14 +116,6 @@ sub ProcessScripDryRun {
         UpdateInterface => 'Web',
         @_);
 
-    my $TicketObj = RT::Ticket->new($args{'CurrentUser'});
-    my ($ret, $msg) = $TicketObj->Load($args{'TicketId'});
-
-    unless ( $ret ){
-        RT::Logger->error("Unable to load ticket " . $args{'TicketId'} . ". Skipping dry run.");
-        return;
-    }
-
     RT::Logger->debug("Starting dry run to gather recipients");
 
     my @dryrun;
@@ -136,7 +128,27 @@ sub ProcessScripDryRun {
             }
         );
     }
+    elsif ( $args{'id'} and $args{'id'} eq 'new' ){
+        my $TicketObj = $args{'TicketObj'};
+        return unless $TicketObj;
+
+        @dryrun = $TicketObj->DryRun(
+            sub {
+                local $args{UpdateContent} ||= "Content";
+                HTML::Mason::Commands::CreateTicket( %args );
+            }
+        );
+
+    }
     else{
+        my $TicketObj = RT::Ticket->new($args{'CurrentUser'});
+        my ($ret, $msg) = $TicketObj->Load($args{'TicketId'});
+
+        unless ( $ret ){
+            RT::Logger->error("Unable to load ticket " . $args{'TicketId'} . ". Skipping dry run.");
+            return;
+        }
+
         @dryrun = $TicketObj->DryRun(
             sub {
                 local $args{UpdateContent} ||= "Content";

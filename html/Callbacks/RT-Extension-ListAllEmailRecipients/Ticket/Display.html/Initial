@@ -1,0 +1,19 @@
+<%init>
+# Only run for new ticket create
+return unless $ARGSRef->{'id'} and $ARGSRef->{'id'} eq 'new';
+
+# Duplicate the checks in Display.html since they haven't run yet
+my $Queue = RT::Queue->new( $session{'CurrentUser'} );
+$Queue->Load($ARGSRef->{'Queue'});
+return unless $Queue->Id;
+return unless $Queue->CurrentUserHasRight('CreateTicket');
+$ARGSRef->{'TicketObj'} ||= RT::Ticket->new($session{'CurrentUser'});
+
+RT::Extension::ListAllEmailRecipients::FindNotificationRecipients(
+    %{$ARGSRef},);
+
+</%init>
+<%args>
+$TicketObj
+$ARGSRef
+</%args>
