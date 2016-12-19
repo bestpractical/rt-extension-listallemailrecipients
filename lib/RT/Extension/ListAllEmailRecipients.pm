@@ -101,6 +101,10 @@ sub FindNotificationRecipients {
         @_
     );
 
+    $NotificationRecipientsTo = '';
+    $NotificationRecipientsCc = '';
+    $NotificationRecipientsBcc = '';
+
     my $recipients_ref = ProcessScripDryRun(%args);
     $NotificationRecipientsTo = join ', ', @{$recipients_ref->{'To'}} if $recipients_ref->{'To'};
     $NotificationRecipientsCc = join ', ', @{$recipients_ref->{'Cc'}} if $recipients_ref->{'Cc'};
