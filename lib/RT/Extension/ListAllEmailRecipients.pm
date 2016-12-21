@@ -2,7 +2,7 @@ use strict;
 use warnings;
 package RT::Extension::ListAllEmailRecipients;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 NAME
 
@@ -15,10 +15,6 @@ ListAllEmailRecipients does a dry run of all scrips configured for a
 notification to determine the full list of email receipients. This
 list is then made available to templates when the actual notification
 scrips are subsequently run to send email.
-
-The current version calculates emails for comments and replies on
-existing tickets via the web UI and email. It does not calculate
-recipients on create.
 
 =head1 RT VERSION
 
@@ -71,6 +67,17 @@ on a ticket, add something like the following to the appropriate template:
     <p>To: {$NotificationRecipientsTo} </p>
     <p>Cc: {$NotificationRecipientsCc} </p>
     <p>Bcc: {$NotificationRecipientsBcc} </p>
+
+=head2 Ticket and Transaction IDs
+
+This extension generates the recipient lists by doing a trial run of the
+incoming action (create, comment, or reply). In doing so, it doesn't actually
+make any changes, but it does increment the ids in the ticket and transaction
+tables and possibly others depending on your scrips. This shouldn't matter for
+most users since ticket ids are arbitrary, but some users depend on ticket ids
+for various reasons. If you have processes that depend on specific ticket ids,
+be aware that using this extension will create gaps between ticket and other
+ids in your database.
 
 =head1 AUTHOR
 

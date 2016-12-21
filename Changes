@@ -1,4 +1,9 @@
 Revision history for RT-Extension-ListAllEmailRecipients
 
+0.02 2016-12-21
+ - Populate recipients on create as well as update
+ - Add compatibility with RT::Extension::OneTimeTo
+ - Clear recipient values to avoid possible retention of values from previous notification
+
 0.01
  - Initial version
