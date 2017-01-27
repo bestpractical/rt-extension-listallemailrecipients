@@ -132,9 +132,11 @@ sub ProcessScripDryRun {
     my @dryrun;
 
     if ( $args{'UpdateInterface'} eq 'EmailCreate' ) {
-        @dryrun = $args{'Ticket'}->DryRun(
+        # load separate ticket obj for dry-run
+        my $TicketObj = RT::Ticket->new($args{'Ticket'}->CurrentUser);
+        @dryrun = $TicketObj->DryRun(
             sub {
-                $args{Ticket}->Create(
+                $TicketObj->Create(
                     Queue     => $args{'Queue'},
                     Subject   => $args{'Subject'},
                     Requestor => $args{'Requestor'},
@@ -145,16 +147,21 @@ sub ProcessScripDryRun {
         );
     }
     elsif ( $args{'UpdateInterface'} eq 'Email' ){
+        # load separate ticket obj for dry-run
+        my $TicketObj = RT::Ticket->new($args{'CurrentUser'});
+        my ($ret, $msg) = $TicketObj->Load($args{Ticket}->Id);
+
         my $action = ucfirst $args{Action};
-        @dryrun = $args{'Ticket'}->DryRun(
+        @dryrun = $TicketObj->DryRun(
             sub {
-                my ( $status, $msg ) = $args{Ticket}->$action( MIMEObj => $args{Message} );
+                my ( $status, $msg ) = $TicketObj->$action( MIMEObj => $args{Message} );
             }
         );
     }
     elsif ( $args{'id'} and $args{'id'} eq 'new' ){
-        my $TicketObj = $args{'TicketObj'};
-        return unless $TicketObj;
+        return unless $args{'TicketObj'};
+        # load separate ticket obj for dry-run
+        my $TicketObj = RT::Ticket->new($args{CurrentUser});
 
         @dryrun = $TicketObj->DryRun(
             sub {
@@ -165,6 +172,7 @@ sub ProcessScripDryRun {
 
     }
     else{
+        # load separate ticket obj for dry-run
         my $TicketObj = RT::Ticket->new($args{'CurrentUser'});
         my ($ret, $msg) = $TicketObj->Load($args{'TicketId'});
 
