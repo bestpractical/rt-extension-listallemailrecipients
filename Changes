@@ -1,5 +1,8 @@
 Revision history for RT-Extension-ListAllEmailRecipients
 
+0.03 2017-01-31
+ - Fix issues with TransactionBatch scrips
+
 0.02 2016-12-21
  - Populate recipients on create as well as update
  - Add compatibility with RT::Extension::OneTimeTo
