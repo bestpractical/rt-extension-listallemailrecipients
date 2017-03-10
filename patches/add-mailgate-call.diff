@@ -1,5 +1,5 @@
 diff --git a/lib/RT/Interface/Email.pm b/lib/RT/Interface/Email.pm
-index ef618e6..8d9eea3 100644
+index ef618e6..8643a24 100644
 --- a/lib/RT/Interface/Email.pm
 +++ b/lib/RT/Interface/Email.pm
 @@ -1456,6 +1456,18 @@ sub Gateway {
@@ -21,3 +21,21 @@ index ef618e6..8d9eea3 100644
          my ( $id, $Transaction, $ErrStr ) = $Ticket->Create(
              Queue     => $SystemQueueObj->Id,
              Subject   => $NewSubject,
+@@ -1504,6 +1516,17 @@ sub Gateway {
+ 
+         #   If the action is comment, add a comment.
+         if ( $action =~ /^(?:comment|correspond)$/i ) {
++
++            if (grep { $_ eq 'RT::Extension::ListAllEmailRecipients' } RT->Config->Get('Plugins')) {
++                RT::Extension::ListAllEmailRecipients::FindNotificationRecipients(
++                    Ticket      => $Ticket,
++                    Message     => $Message,
++                    Action      => $action,
++                    CurrentUser => $CurrentUser,
++                    UpdateInterface => 'Email',
++                );
++            }
++
+             my $method = ucfirst lc $action;
+             my ( $status, $msg ) = $Ticket->$method( MIMEObj => $Message );
+             unless ($status) {

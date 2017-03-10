@@ -153,11 +153,11 @@ sub ProcessScripDryRun {
         }
 
         my $action = ucfirst $args{Action};
-        @dryrun = $TicketObj->DryRun(
-            sub {
-                my ( $status, $msg ) = $TicketObj->$action( MIMEObj => $args{Message} );
-            }
-        );
+
+        # DryRun maps "Correspond" to Comment
+        $action = 'Respond' if lc($action) eq 'correspond';
+
+        @dryrun = $TicketObj->DryRun( MIMEObj => $args{Message}, Action => $action );
     }
     elsif ( $args{'id'} and $args{'id'} eq 'new' ){
         return unless $args{'TicketObj'};
