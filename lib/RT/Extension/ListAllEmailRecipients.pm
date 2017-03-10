@@ -151,6 +151,11 @@ sub ProcessScripDryRun {
         my $TicketObj = RT::Ticket->new($args{'CurrentUser'});
         my ($ret, $msg) = $TicketObj->Load($args{Ticket}->Id);
 
+        unless ( $ret ){
+            RT::Logger->error("Unable to load ticket " . $args{'Ticket'}->Id . ". Skipping dry run.");
+            return;
+        }
+
         my $action = ucfirst $args{Action};
         @dryrun = $TicketObj->DryRun(
             sub {
