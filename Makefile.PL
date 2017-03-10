@@ -3,7 +3,7 @@ use inc::Module::Install;
 RTx     'RT-Extension-ListAllEmailRecipients';
 license 'gplv2';
 
-requires_rt '4.2.0';
+requires_rt '4.4.0';
 
 my ($lp) = ($INC{'RT.pm'} =~ /^(.*)[\\\/]/);
 my $lib_path = join( ' ', "$RT::LocalPath/lib", $lp );
