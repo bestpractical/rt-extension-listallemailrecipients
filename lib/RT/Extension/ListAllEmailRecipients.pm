@@ -37,7 +37,12 @@ May need root permissions
 Add these lines, both are required:
 
     Plugin('RT::Extension::ListAllEmailRecipients');
-    Set(@MailPlugins, qw(Auth::MailFrom Action::ListAllEmailRecipients));
+
+=item Patch your RT
+
+ListAllRecipients requires a patch for your RT instance.
+
+    patch -p1 < patches/add-mailgate-call.diff
 
 =item Clear your mason cache
 
