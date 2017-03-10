@@ -18,7 +18,7 @@ scrips are subsequently run to send email.
 
 =head1 RT VERSION
 
-Works with RT 4.4
+Works with RT 4.2
 
 =head1 INSTALLATION
 

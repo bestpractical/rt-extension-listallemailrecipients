@@ -9,7 +9,7 @@ DESCRIPTION
     are subsequently run to send email.
 
 RT VERSION
-    Works with RT 4.4
+    Works with RT 4.2
 
 INSTALLATION
     perl Makefile.PL
