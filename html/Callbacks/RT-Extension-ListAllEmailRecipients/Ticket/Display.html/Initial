@@ -10,7 +10,9 @@ return unless $Queue->CurrentUserHasRight('CreateTicket');
 $ARGSRef->{'TicketObj'} ||= RT::Ticket->new($session{'CurrentUser'});
 
 RT::Extension::ListAllEmailRecipients::FindNotificationRecipients(
-    %{$ARGSRef},);
+    %{$ARGSRef},
+    CurrentUser => $session{'CurrentUser'},
+);
 
 </%init>
 <%args>

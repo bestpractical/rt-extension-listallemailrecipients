@@ -168,13 +168,7 @@ sub ProcessScripDryRun {
         # load separate ticket obj for dry-run
         my $TicketObj = RT::Ticket->new($args{CurrentUser});
 
-        @dryrun = $TicketObj->DryRun(
-            sub {
-                local $args{UpdateContent} ||= "Content";
-                HTML::Mason::Commands::CreateTicket( %args );
-            }
-        );
-
+        @dryrun = $TicketObj->DryRunCreate(%args);
     }
     else{
         # load separate ticket obj for dry-run
