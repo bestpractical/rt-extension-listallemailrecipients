@@ -180,18 +180,7 @@ sub ProcessScripDryRun {
             return;
         }
 
-        @dryrun = $TicketObj->DryRun(
-            sub {
-                local $args{UpdateContent} ||= "Content";
-                HTML::Mason::Commands::ProcessUpdateMessage(ARGSRef  => \%args, TicketObj => $TicketObj, KeepAttachments => 1 );
-                HTML::Mason::Commands::ProcessTicketWatchers(ARGSRef => \%args, TicketObj => $TicketObj );
-                HTML::Mason::Commands::ProcessTicketBasics(  ARGSRef => \%args, TicketObj => $TicketObj );
-                HTML::Mason::Commands::ProcessTicketLinks(   ARGSRef => \%args, TicketObj => $TicketObj );
-                HTML::Mason::Commands::ProcessTicketDates(   ARGSRef => \%args, TicketObj => $TicketObj );
-                HTML::Mason::Commands::ProcessObjectCustomFieldUpdates(ARGSRef => \%args, TicketObj => $TicketObj );
-                HTML::Mason::Commands::ProcessTicketReminders( ARGSRef => \%args, TicketObj => $TicketObj );
-            }
-        );
+        @dryrun = $TicketObj->DryRun(%args);
     }
     return unless @dryrun;
 
