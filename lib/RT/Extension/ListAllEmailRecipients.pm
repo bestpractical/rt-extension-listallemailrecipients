@@ -134,16 +134,12 @@ sub ProcessScripDryRun {
     if ( $args{'UpdateInterface'} eq 'EmailCreate' ) {
         # load separate ticket obj for dry-run
         my $TicketObj = RT::Ticket->new($args{'Ticket'}->CurrentUser);
-        @dryrun = $TicketObj->DryRun(
-            sub {
-                $TicketObj->Create(
-                    Queue     => $args{'Queue'},
-                    Subject   => $args{'Subject'},
-                    Requestor => $args{'Requestor'},
-                    Cc        => $args{'Cc'},
-                    MIMEObj   => $args{'MIMEObj'},
-                );
-            }
+        @dryrun = $TicketObj->DryRunCreate(
+            Queue     => $args{'Queue'},
+            Subject   => $args{'Subject'},
+            Requestor => $args{'Requestor'},
+            Cc        => $args{'Cc'},
+            MIMEObj   => $args{'MIMEObj'},
         );
     }
     elsif ( $args{'UpdateInterface'} eq 'Email' ){

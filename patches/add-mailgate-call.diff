@@ -1,0 +1,23 @@
+diff --git a/lib/RT/Interface/Email.pm b/lib/RT/Interface/Email.pm
+index ef618e6..8d9eea3 100644
+--- a/lib/RT/Interface/Email.pm
++++ b/lib/RT/Interface/Email.pm
+@@ -1456,6 +1456,18 @@ sub Gateway {
+             );
+         }
+ 
++        if (grep { $_ eq 'RT::Extension::ListAllEmailRecipients' } RT->Config->Get('Plugins')) {
++            RT::Extension::ListAllEmailRecipients::FindNotificationRecipients(
++                Ticket    => $Ticket,
++                Queue     => $SystemQueueObj->Id,
++                Subject   => $NewSubject,
++                Requestor => \@Requestors,
++                Cc        => \@Cc,
++                MIMEObj   => $Message,
++                UpdateInterface => 'EmailCreate',
++            );
++        }
++
+         my ( $id, $Transaction, $ErrStr ) = $Ticket->Create(
+             Queue     => $SystemQueueObj->Id,
+             Subject   => $NewSubject,
